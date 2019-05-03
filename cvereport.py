@@ -1,18 +1,39 @@
 import github
-import datetime
 import consts
-ACCESS_TOKEN = consts.getAccessToken()
-REPO_NAME = consts.getRepoName()
-CVE_DATE = datetime.datetime(datetime.datetime.today().year,datetime.datetime.today().month,datetime.datetime.today().day)
+import sys
+from dateutil import parser
+
+CVE_DATE = consts.getToday()
 # CVE_DATE = datetime.datetime(2019,4,14)
 # CVE_TO_DATE = datetime.datetime(2019,4,11)
-CVE_TO_DATE = CVE_DATE + datetime.timedelta(days=1)
-myGitHub = github.Github(ACCESS_TOKEN)
-cveDbRepo = myGitHub.get_repo(REPO_NAME)
-print ("Reading CVE information of", cveDbRepo.full_name , "from Github")
-cveData = cveDbRepo.get_issues("none","all","none",github.GithubObject.NotSet,"","","", CVE_DATE)
+CVE_TO_DATE = consts.getNextday(CVE_DATE)
 
-def printCVEInfo(cveList):
+def getArgs():
+    global CVE_DATE
+    global CVE_TO_DATE
+    arguments = sys.argv[1:]
+    if (len(arguments)>0):
+        if (arguments[0]=="help" or arguments[0]=="h" or arguments[0]=="-help" or arguments[0]=="-h"):
+            print ("Usage: Run the program without any arguments and data will be for today")
+            print ("You can pass FromDate to get data from a particular date till today")
+            print ("You can pass FromDate and ToDate to get data between two dates")
+            sys.exit(1)
+        CVE_DATE = parser.parse(arguments[0])
+        if (len(arguments)==2):
+            CVE_TO_DATE = parser.parse(arguments[1])
+        else:
+            CVE_TO_DATE = consts.getNextday(CVE_DATE)
+
+def getData():
+    ACCESS_TOKEN = consts.getAccessToken()
+    REPO_NAME = consts.getRepoName()
+    myGitHub = github.Github(ACCESS_TOKEN)
+    cveDbRepo = myGitHub.get_repo(REPO_NAME)
+    print ("Reading CVE information of", cveDbRepo.full_name , "from Github")
+    cveData = cveDbRepo.get_issues("none","all","none",github.GithubObject.NotSet,"","","", CVE_DATE)
+    return cveData
+
+def printCVEInfo(cveList,fromDate,ToDate):
     javacves1 = []
     npmcves1 = []
     pythoncves1 = []
@@ -20,14 +41,14 @@ def printCVEInfo(cveList):
     npmcves2 = []
     pythoncves2 = []
     for cveItem in cveList:
-        if cveItem.created_at is not None and cveItem.created_at >= CVE_DATE and cveItem.created_at <= CVE_TO_DATE:
+        if cveItem.created_at is not None and cveItem.created_at >= fromDate and cveItem.created_at <= ToDate:
             if cveItem.title.find("javascript") > 0:
                 npmcves1.append(cveItem)
             elif cveItem.title.find("java") > 0:
                 javacves1.append(cveItem)
             elif cveItem.title.find("python") > 0:
                 pythoncves1.append(cveItem)
-        if cveItem.closed_at is not None and cveItem.closed_at >= CVE_DATE and cveItem.closed_at <= CVE_TO_DATE:
+        if cveItem.closed_at is not None and cveItem.closed_at >= fromDate and cveItem.closed_at <= ToDate:
             if cveItem.title.find("javascript") > 0:
                 npmcves2.append(cveItem)
             elif cveItem.title.find("java") > 0:
@@ -43,5 +64,8 @@ def printCVEInfo(cveList):
     print ("Java -", len(javacves2))
     print ("Node -", len(npmcves2))
     print ("Pypi -",len(pythoncves2))
-    
-printCVEInfo(cveData)
+
+getArgs()
+cveInfo = getData()
+if cveInfo is not None:
+    printCVEInfo(cveInfo,CVE_DATE,CVE_TO_DATE)
