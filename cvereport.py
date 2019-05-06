@@ -20,7 +20,7 @@ def getArgs():
             sys.exit(1)
         CVE_DATE = parser.parse(arguments[0])
         if (len(arguments)==2):
-            CVE_TO_DATE = parser.parse(arguments[1])
+            CVE_TO_DATE = consts.getNextday(parser.parse(arguments[1]))
         else:
             CVE_TO_DATE = consts.getNextday(CVE_DATE)
 
