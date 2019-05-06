@@ -15,7 +15,7 @@ def getArgs():
     if (len(arguments)>0):
         if (arguments[0]=="help" or arguments[0]=="h" or arguments[0]=="-help" or arguments[0]=="-h"):
             print ("Usage: Run the program without any arguments and data will be for today")
-            print ("You can pass FromDate to get data from a particular date till today")
+            print ("You can pass FromDate to get data for a particular date")
             print ("You can pass FromDate and ToDate to get data between two dates")
             sys.exit(1)
         CVE_DATE = parser.parse(arguments[0])
