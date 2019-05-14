@@ -38,6 +38,7 @@ def printCVEInfo(cveList,fromDate,ToDate):
     javacves2 = []
     npmcves2 = []
     pythoncves2 = []
+    mergedcves = []
     for cveItem in cveList:
         if cveItem.created_at is not None and cveItem.created_at >= fromDate and cveItem.created_at <= ToDate:
             if cveItem.title.find("javascript") > 0:
@@ -53,6 +54,9 @@ def printCVEInfo(cveList,fromDate,ToDate):
                 javacves2.append(cveItem)
             elif cveItem.title.find("python") > 0:
                 pythoncves2.append(cveItem)
+        cvePull = cveItem.as_pull_request()
+        if cvePull.merged_at is not None and cvePull.merged_at >= fromDate and cvePull.merged_at <= ToDate:
+            mergedcves.append(cveItem)
     print("OPEN CVE information")
     print ("Java -", len(javacves1))
     print ("Node -", len(npmcves1))
@@ -62,7 +66,8 @@ def printCVEInfo(cveList,fromDate,ToDate):
     print ("Java -", len(javacves2))
     print ("Node -", len(npmcves2))
     print ("Pypi -",len(pythoncves2))
-
+    print ("--------------")
+    print("Merged CVEs",len(mergedcves))
 getArgs()
 cveInfo = getData()
 if cveInfo is not None:
