@@ -44,3 +44,8 @@ def printCVEText(javacves1, npmcves1, pythoncves1, javacves2, npmcves2, pythoncv
     if (bMergeCount()):
         print("--------------")
         print("Merged CVEs", len(mergedcves))
+
+
+def printNVDrepo(nvd_data, repo_data, year):
+    print('cvedb repo has', len(repo_data), 'CVES for ' + str(year))
+    print('NVD data has', len(nvd_data), 'CVES for ' + str(year))

@@ -25,7 +25,7 @@ def getCVEs(ecosystemContent, year, cvelist):
     return cvelist
 
 
-def getCVEContent(repo, year):
+def getCVEdataRepo(repo, year):
     cveFiles = []
     cveContentJava = repo.get_dir_contents(
         'database/java/' + str(year))
@@ -36,11 +36,12 @@ def getCVEContent(repo, year):
     getCVEs(cveContentJava, year, cveFiles)
     getCVEs(cveContentJS, year, cveFiles)
     getCVEs(cveContentPython, year, cveFiles)
-    return json.dumps(cveFiles)
+    return cveFiles
 
 
-def getCVEData(year):
+def getCVEdataNVD(year):
     cveIDs = []
+    print('Reading CVE information from NVD feed')
     with open(getCVEdataFileName(year)) as cveFile:
         cveData = json.load(cveFile)
         for cveitem in cveData["CVE_Items"]:
@@ -49,4 +50,4 @@ def getCVEData(year):
                     for cvekey, cveval in cveitemval.items():
                         if (cvekey == "CVE_data_meta"):
                             cveIDs.append(cveval["ID"])
-    return json.dumps(cveIDs)
+    return cveIDs

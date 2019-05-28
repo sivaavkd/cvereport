@@ -22,30 +22,23 @@ def getArgs():
 
 def getNVDData():
     try:
-        return utils.getCVEData(CVE_YEAR)
+        return utils.getCVEdataNVD(CVE_YEAR)
     except:
-        print("Please make sure you have the NVD feed (json) in feeds folder.  You can download from https://nvd.nist.gov/vuln/data-feeds")
+        print(
+            'Please make sure you have the NVD feed (json) in feeds folder for the year', CVE_YEAR, '. You can download feeds from https://nvd.nist.gov/vuln/data-feeds')
         exit(1)
 
 
 def getDBData(repo):
     try:
-        return utils.getCVEContent(repo, CVE_YEAR)
+        return utils.getCVEdataRepo(repo, CVE_YEAR)
     except:
         print("Error while reading data from repo.")
         exit(1)
-
-
-def compareCVEData(nvd_data, repo_data):
-    print('Compare CVE Data')
-    print('Our repo has the following CVE data for ' + str(CVE_YEAR))
-    print(repo_data)
-    print('NVD data for ' + str(CVE_YEAR))
-    print(nvd_data)
 
 
 getArgs()
 cveDbRepo = utils.getGHRepo()
 cveDBData = getDBData(cveDbRepo)
 nvdData = getNVDData()
-compareCVEData(nvdData, cveDBData)
+consts.printNVDrepo(nvdData, cveDBData, CVE_YEAR)
