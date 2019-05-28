@@ -16,7 +16,6 @@ def getArgs():
             sys.exit(1)
         try:
             CVE_YEAR = parser.parse(arguments[0]).year
-            print(CVE_YEAR)
         except:
             consts.printCompareHelp()
             sys.exit(1)
