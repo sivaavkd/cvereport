@@ -1,10 +1,6 @@
 import datetime
 
 
-def getAccessToken():
-    return "YOUR KEY"
-
-
 def getRepoName():
     return "fabric8-analytics/cvedb"
 

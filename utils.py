@@ -2,11 +2,12 @@ import consts
 import github
 import json
 import sys
+import ghtoken
 
 
 def getGHRepo():
     try:
-        ACCESS_TOKEN = consts.getAccessToken()
+        ACCESS_TOKEN = ghtoken.getAccessToken()
         REPO_NAME = consts.getRepoName()
         myGitHub = github.Github(ACCESS_TOKEN)
         cveDbRepo = myGitHub.get_repo(REPO_NAME)
