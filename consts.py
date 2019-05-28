@@ -52,3 +52,7 @@ def printCVEText(javacves1, npmcves1, pythoncves1, javacves2, npmcves2, pythoncv
 def printNVDrepo(nvd_data, repo_data, year):
     print('cvedb repo has', len(repo_data), 'CVES for ' + str(year))
     print('NVD data has', len(nvd_data), 'CVES for ' + str(year))
+
+
+def getDiffList(nvd_data, repo_data):
+    return list(set(nvd_data)-set(repo_data))
