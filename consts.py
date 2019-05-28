@@ -31,6 +31,13 @@ def printHelpText():
     print("Example 3: python3 cvereport.py 2019-05-01 2019-05-03 (returns open and closed CVEs from 1st May to 3rd May including both days)")
 
 
+def printCompareHelp():
+    print("Usage: Run the program without any arguments and data will be for this year")
+    print("Pass Year to get data for a particular Year")
+    print("Example 1: python3 cvecompare.py (comparision of CVE data of this year)")
+    print("Example 2: python3 cvecompare.py 2018 (comparision of CVE data of 2018)")
+
+
 def printCVEText(javacves1, npmcves1, pythoncves1, javacves2, npmcves2, pythoncves2, mergedcves):
     print("OPEN CVE information")
     print("Java -", len(javacves1))

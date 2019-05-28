@@ -2,6 +2,7 @@ import github
 import consts
 import sys
 import utils
+from dateutil import parser
 
 CVE_YEAR = consts.getToday().year
 
@@ -14,9 +15,10 @@ def getArgs():
             consts.printHelpText()
             sys.exit(1)
         try:
-            CVE_YEAR = arguments[0]
+            CVE_YEAR = parser.parse(arguments[0]).year
+            print(CVE_YEAR)
         except:
-            consts.printHelpText()
+            consts.printCompareHelp()
             sys.exit(1)
 
 
@@ -29,16 +31,16 @@ def getNVDData():
         exit(1)
 
 
-def getDBData(repo):
+def getRepoData():
     try:
-        return utils.getCVEdataRepo(repo, CVE_YEAR)
+        cveDbRepo = utils.getGHRepo()
+        return utils.getCVEdataRepo(cveDbRepo, CVE_YEAR)
     except:
         print("Error while reading data from repo.")
         exit(1)
 
 
 getArgs()
-cveDbRepo = utils.getGHRepo()
-cveDBData = getDBData(cveDbRepo)
-nvdData = getNVDData()
-consts.printNVDrepo(nvdData, cveDBData, CVE_YEAR)
+repodata = getRepoData()
+nvddata = getNVDData()
+consts.printNVDrepo(nvddata, repodata, CVE_YEAR)
