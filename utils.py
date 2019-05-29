@@ -11,7 +11,7 @@ def getGHRepo():
         REPO_NAME = consts.getRepoName()
         myGitHub = github.Github(ACCESS_TOKEN)
         cveDbRepo = myGitHub.get_repo(REPO_NAME)
-        print("Reading CVE information of", cveDbRepo.full_name, "from Github")
+        #print("Reading CVE information of", cveDbRepo.full_name, "from Github")
         return cveDbRepo
     except:
         print("Error while reading Github data.  Please make sure you have a working access token in getAccessToken() of consts.py")
@@ -55,7 +55,7 @@ def getCVEdataRepo(repo, year, ecosystem='all'):
 
 def getCVEdataNVD(year):
     cveIDs = []
-    print('Reading CVE information from NVD feed')
+    #print('Reading CVE information from NVD feed')
     with open(getNVDfileName(year)) as cveFile:
         cveData = json.load(cveFile)
         for cveitem in cveData["CVE_Items"]:
@@ -66,3 +66,7 @@ def getCVEdataNVD(year):
                         if (cvekey == "CVE_data_meta"):
                             cveIDs.append(cveval["ID"])
     return cveIDs
+
+
+def getDiffList(nvd_data, repo_data):
+    return list(set(nvd_data)-set(repo_data))

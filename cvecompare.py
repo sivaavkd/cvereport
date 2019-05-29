@@ -3,6 +3,7 @@ import consts
 import sys
 import utils
 from dateutil import parser
+import customdata
 
 CVE_YEAR = consts.getToday().year
 
@@ -30,10 +31,10 @@ def getNVDData():
         exit(1)
 
 
-def getRepoData():
+def getRepoData(ecosystem='all'):
     try:
         cveDbRepo = utils.getGHRepo()
-        return utils.getCVEdataRepo(cveDbRepo, CVE_YEAR)
+        return utils.getCVEdataRepo(cveDbRepo, CVE_YEAR, ecosystem)
     except:
         print("Error while reading data from repo.")
         exit(1)
@@ -43,3 +44,11 @@ getArgs()
 repodata = getRepoData()
 nvddata = getNVDData()
 consts.printNVDrepo(nvddata, repodata, CVE_YEAR)
+
+# eco_system = 'javascript'
+# npmrepo_data = getRepoData(eco_system)
+# custom_data = customdata.getCustomData(CVE_YEAR, eco_system)
+# consts.printComparison(custom_data, npmrepo_data, CVE_YEAR, eco_system)
+# print('')
+# print('CVES to manually review are as below:')
+# print(utils.getDiffList(custom_data, npmrepo_data))
