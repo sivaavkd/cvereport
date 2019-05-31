@@ -19,11 +19,11 @@ def getGHRepo():
 
 
 def getNVDfileName(fileyear):
-    return 'feeds/nvdcve-1.0-' + str(fileyear) + '.json'
+    return consts.getFolderName() + '/nvdcve-1.0-' + str(fileyear) + '.json'
 
 
 def getStackfileName(filedate):
-    return 'feeds/stkrpt_' + str(filedate) + '.json'
+    return consts.getFolderName() + '/stkrpt_' + str(filedate) + '.json'
 
 
 def getCVElist(repoContent, year):

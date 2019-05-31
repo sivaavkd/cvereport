@@ -26,7 +26,6 @@ def getArgs():
             CVE_YEAR = parser.parse(args[0]).year
             CVE_DATE = consts.getDate(False, parser.parse(args[0]).year, parser.parse(
                 args[0]).month, parser.parse(args[0]).day)
-            print(CVE_DATE)
             if (len(args) > 1):
                 COMPARE_TYPE = int(args[1])
             if (len(args) > 2):
@@ -69,7 +68,10 @@ def printComparisonReport():
     elif COMPARE_TYPE == 6:
         packagedata, versiondata = utils.getStackData(ECOSYSTEM, CVE_DATE)
         if (ECOSYSTEM == 'javascript'):
-            customdata.createpkgjsonFiles(packagedata, versiondata, 'feeds')
+            pkgjsonfile = customdata.createpkgjsonFiles(
+                packagedata, versiondata, consts.getFolderName())
+            npmcves = customdata.runnpmaudit(pkgjsonfile)
+            dacves = customdata.runDA(packagedata, versiondata)
 
 
 getArgs()

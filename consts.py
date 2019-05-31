@@ -11,8 +11,19 @@ class ComparisonType(Enum):
     STACK_CVEDB_ECO = 6
 
 
+class Ecosystem(Enum):
+    JAVA = 1
+    JAVASCRIPT = 2
+    PYTHON = 3
+    GOLANG = 4
+
+
 def getRepoName():
     return "fabric8-analytics/cvedb"
+
+
+def getFolderName():
+    return 'feeds'
 
 
 def getDate(includetime=False, thisyear=0, thismonth=0, thisday=0):

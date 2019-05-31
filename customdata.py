@@ -1,7 +1,9 @@
 from feeds.data_2019 import setData2019_js
 from feeds.data_2018 import setData2018_js
-from os import popen
+from os import popen, chdir
 import consts
+from re import finditer
+import json
 
 
 def getCustomData(datayear, ecosystem, alldata=False):
@@ -23,14 +25,20 @@ def getCustomData(datayear, ecosystem, alldata=False):
     return data
 
 
-def getNPMpkgcheck():
+def getNPMpkgcheckCmd():
     return 'npm search --json ', '', '[{"name":"', '"'
     # return 'curl "http://npmsearch.com/query?q=', '"', '{"results":[]', ''
 
 
+def getnpmauditCmd():
+    return 'npm i --package-lock-only', 'npm audit --json'
+
+
 def createpkgjsonFiles(packages, versions, pkgfolder):
-    pkgjson = open(pkgfolder + '/package.json', "w+")
-    pkgcmdPrefix, pkgcmdSuffix, pkgFindPrefix, pkgFindSuffix = getNPMpkgcheck()
+    if pkgfolder != '':
+        chdir(pkgfolder)
+    pkgjson = open('package.json', "w+")
+    pkgcmdPrefix, pkgcmdSuffix, pkgFindPrefix, pkgFindSuffix = getNPMpkgcheckCmd()
     pkgjson.write('{\n\t"dependencies": {\n')
     timeStart = consts.getDate(True)
     for i in range(len(packages)):
@@ -42,4 +50,23 @@ def createpkgjsonFiles(packages, versions, pkgfolder):
                 pkgjson.write(',')
             pkgjson.write('\n')
     pkgjson.write('\t}\n}')
-    # print('Start Time, End Time: ', timeStart, consts.getDate(True))
+    return pkgjson.name
+    # return 'package.json'
+
+
+def runnpmaudit(pkgjsonfile):
+    cvesfound = []
+    pkglockcmd, auditcmd = getnpmauditCmd()
+    print('Generating package lock file...')
+    pkglocktext = popen(pkglockcmd).read()
+    print('Running npm audit...')
+    auditresult = json.loads(popen(auditcmd).read())
+    for audititem in auditresult['advisories']:
+        for cveitem in auditresult['advisories'][audititem]['cves']:
+            cvesfound.append(cveitem)
+    print(cvesfound)
+    return cvesfound
+
+
+def runDA(packages, versions):
+    return []
