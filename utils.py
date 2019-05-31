@@ -11,15 +11,19 @@ def getGHRepo():
         REPO_NAME = consts.getRepoName()
         myGitHub = github.Github(ACCESS_TOKEN)
         cveDbRepo = myGitHub.get_repo(REPO_NAME)
-        #print("Reading CVE information of", cveDbRepo.full_name, "from Github")
+        print("Reading CVE information of", cveDbRepo.full_name, "from Github")
         return cveDbRepo
     except:
         print("Error while reading Github data.  Please make sure you have a working access token in getAccessToken() of consts.py")
         sys.exit(1)
 
 
-def getNVDfileName(year):
-    return 'feeds/nvdcve-1.0-' + str(year) + '.json'
+def getNVDfileName(fileyear):
+    return 'feeds/nvdcve-1.0-' + str(fileyear) + '.json'
+
+
+def getStackfileName(filedate):
+    return 'feeds/stkrpt_' + str(filedate) + '.json'
 
 
 def getCVElist(repoContent, year):
@@ -55,7 +59,7 @@ def getCVEdataRepo(repo, year, ecosystem='all'):
 
 def getCVEdataNVD(year):
     cveIDs = []
-    #print('Reading CVE information from NVD feed')
+    print('Reading CVE information from NVD feed')
     with open(getNVDfileName(year)) as cveFile:
         cveData = json.load(cveFile)
         for cveitem in cveData["CVE_Items"]:
@@ -70,3 +74,15 @@ def getCVEdataNVD(year):
 
 def getDiffList(nvd_data, repo_data):
     return list(set(nvd_data)-set(repo_data))
+
+
+def getStackData(ecosystem, cvedate):
+    packageNames = []
+    packageVersions = []
+    print('Reading package information from stack file')
+    with open(getStackfileName(cvedate)) as stackFile:
+        stackData = json.load(stackFile)
+    for package in stackData["stacks_summary"]["npm"]["unique_dependencies_with_frequency"]:
+        packageNames.append(str(package).split(' ')[0])
+        packageVersions.append(str(package).split(' ')[1])
+    return packageNames, packageVersions

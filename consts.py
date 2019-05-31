@@ -1,16 +1,39 @@
 import datetime
+from enum import Enum
+
+
+class ComparisonType(Enum):
+    NVD_CVEDB_ALL = 1
+    NVD_CVEDB_ECO = 2
+    CUSTOM_CVEDB_ALL = 3
+    CUSTOM_CVEDB_ECO = 4
+    STACK_CVEDB_ALL = 5
+    STACK_CVEDB_ECO = 6
 
 
 def getRepoName():
     return "fabric8-analytics/cvedb"
 
 
-def getToday():
-    return datetime.datetime(datetime.datetime.today().year, datetime.datetime.today().month, datetime.datetime.today().day)
+def getDate(includetime=False, thisyear=0, thismonth=0, thisday=0):
+    if thisyear == 0:
+        thisyear = datetime.datetime.today().year
+    if thismonth == 0:
+        thismonth = datetime.datetime.today().month
+    if thisday == 0:
+        thisday = datetime.datetime.today().day
+    if includetime:
+        return datetime.datetime.today()
+    else:
+        return datetime.date(thisyear, thismonth, thisday)
 
 
 def getNextday(thisDay):
     return thisDay + datetime.timedelta(days=1)
+
+
+def distinctList(mylist):
+    return list(dict.fromkeys(mylist))
 
 
 def bMergeCount():

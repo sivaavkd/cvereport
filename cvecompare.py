@@ -5,18 +5,32 @@ import utils
 from dateutil import parser
 import customdata
 
-CVE_YEAR = consts.getToday().year
+ECOSYSTEM = 'all'
+COMPARE_TYPE = 1
+CVE_DATE = consts.getDate()
+CVE_YEAR = CVE_DATE.year
 
 
 def getArgs():
     global CVE_YEAR
-    arguments = sys.argv[1:]
-    if (len(arguments) > 0):
-        if (arguments[0] == "help" or arguments[0] == "h" or arguments[0] == "-help" or arguments[0] == "-h"):
+    global COMPARE_TYPE
+    global ECOSYSTEM
+    global CVE_DATE
+    args = sys.argv[1:]
+    if (len(args) > 0):
+        if (args[0] == "help" or args[0] == "h" or args[0] == "-help" or args[0] == "-h"):
             consts.printHelpText()
             sys.exit(1)
         try:
-            CVE_YEAR = parser.parse(arguments[0]).year
+
+            CVE_YEAR = parser.parse(args[0]).year
+            CVE_DATE = consts.getDate(False, parser.parse(args[0]).year, parser.parse(
+                args[0]).month, parser.parse(args[0]).day)
+            print(CVE_DATE)
+            if (len(args) > 1):
+                COMPARE_TYPE = int(args[1])
+            if (len(args) > 2):
+                ECOSYSTEM = args[2].lower()
         except:
             consts.printCompareHelp()
             sys.exit(1)
@@ -40,15 +54,23 @@ def getRepoData(ecosystem='all'):
         exit(1)
 
 
-getArgs()
-repodata = getRepoData()
-nvddata = getNVDData()
-consts.printNVDrepo(nvddata, repodata, CVE_YEAR)
+def printComparisonReport():
+    if COMPARE_TYPE == 1:
+        repodata = getRepoData()
+        nvddata = getNVDData()
+        consts.printNVDrepo(nvddata, repodata, CVE_YEAR)
+    elif COMPARE_TYPE == 4:
+        npmrepo_data = getRepoData(ECOSYSTEM)
+        custom_data = customdata.getCustomData(CVE_YEAR, ECOSYSTEM)
+        consts.printComparison(custom_data, npmrepo_data, CVE_YEAR, ECOSYSTEM)
+        print('')
+        print('CVES to manually review are as below:')
+        print(utils.getDiffList(custom_data, npmrepo_data))
+    elif COMPARE_TYPE == 6:
+        packagedata, versiondata = utils.getStackData(ECOSYSTEM, CVE_DATE)
+        if (ECOSYSTEM == 'javascript'):
+            customdata.createpkgjsonFiles(packagedata, versiondata, 'feeds')
 
-# eco_system = 'javascript'
-# npmrepo_data = getRepoData(eco_system)
-# custom_data = customdata.getCustomData(CVE_YEAR, eco_system)
-# consts.printComparison(custom_data, npmrepo_data, CVE_YEAR, eco_system)
-# print('')
-# print('CVES to manually review are as below:')
-# print(utils.getDiffList(custom_data, npmrepo_data))
+
+getArgs()
+printComparisonReport()
