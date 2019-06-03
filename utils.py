@@ -2,6 +2,7 @@ import consts
 import github
 import json
 import sys
+import os
 import ghtoken
 
 
@@ -86,3 +87,13 @@ def getStackData(ecosystem, cvedate):
         packageNames.append(str(package).split(' ')[0])
         packageVersions.append(str(package).split(' ')[1])
     return packageNames, packageVersions
+
+
+def changeDirectory(dirName):
+    currDir = os.getcwd()
+    print(currDir)
+    if not currDir.endswith('/' + dirName) and dirName != '':
+        if currDir.find('pkgfolder') >= 0:
+            os.chdir('..')
+        print(os.getcwd())
+        os.chdir(dirName)

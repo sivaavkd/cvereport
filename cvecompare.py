@@ -68,12 +68,17 @@ def printComparisonReport():
     elif COMPARE_TYPE == consts.ComparisonType.STACK_CVEDB_ECO.value:
         packagedata, versiondata = utils.getStackData(ECOSYSTEM, CVE_DATE)
         if (ECOSYSTEM == consts.Ecosystem.JAVASCRIPT.value):
-            pkgjsonfile = customdata.createpkgjsonFiles(
+            pkgjsonfile = customdata.createpkgjsonFile(
                 packagedata, versiondata, consts.getFolderName())
-            npmcves = customdata.runnpmaudit(pkgjsonfile)
-            print('CVEs that are shown in npm audit are:')
-            print(npmcves)
-            dacves = customdata.runDA(packagedata, versiondata)
+            pkgjsonFileList = customdata.createMultiplePkgFiles(
+                packagedata, versiondata, consts.getFolderName())
+            # npmcves = customdata.runnpmaudit(pkgjsonfile)
+            # npmcves = customdata.runAllnpmaudits(pkgjsonFileList)
+            # print('CVEs that are shown in npm audit are:')
+            # print(npmcves)
+            dacves = customdata.runDA(ECOSYSTEM, packagedata, versiondata)
+            print('CVEs that are shown in Stack Report are:')
+            # print(dacves)
 
 
 getArgs()

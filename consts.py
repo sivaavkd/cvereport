@@ -12,14 +12,22 @@ class ComparisonType(Enum):
 
 
 class Ecosystem(Enum):
-    JAVA = 'java'
-    JAVASCRIPT = 'javascript'
-    PYTHON = 'python'
+    JAVA = 'maven'
+    JAVASCRIPT = 'npm'
+    PYTHON = 'pypi'
     GOLANG = 'go'
 
 
 def getRepoName():
     return "fabric8-analytics/cvedb"
+
+
+def getPkgFileName():
+    return 'package.json'
+
+
+def getNPMAuditReportName():
+    return 'npmaudit.json'
 
 
 def getFolderName():
@@ -93,3 +101,11 @@ def printComparison(master_data, repo_data, year, ecosystem):
           str(year) + ' for ecosystem: ' + ecosystem)
     print('Master dataset has', len(master_data), 'CVES for ' +
           str(year) + ' for ecosystem: ' + ecosystem)
+
+
+def getNPMpkgcheckCmd():
+    return 'npm search --json ', '', '[{"name":"', '"'
+
+
+def getnpmauditCmd():
+    return 'npm i --package-lock-only', 'npm audit --json'
