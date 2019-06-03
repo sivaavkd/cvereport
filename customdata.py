@@ -54,17 +54,21 @@ def createpkgjsonFiles(packages, versions, pkgfolder):
     # return 'package.json'
 
 
+def packageLockExits():
+    return False
+
+
 def runnpmaudit(pkgjsonfile):
     cvesfound = []
     pkglockcmd, auditcmd = getnpmauditCmd()
-    print('Generating package lock file...')
-    pkglocktext = popen(pkglockcmd).read()
+    if packageLockExits() == False:
+        print('Generating package lock file...')
+        pkglocktext = popen(pkglockcmd).read()
     print('Running npm audit...')
     auditresult = json.loads(popen(auditcmd).read())
     for audititem in auditresult['advisories']:
         for cveitem in auditresult['advisories'][audititem]['cves']:
             cvesfound.append(cveitem)
-    print(cvesfound)
     return cvesfound
 
 

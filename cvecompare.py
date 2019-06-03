@@ -63,14 +63,16 @@ def printComparisonReport():
         custom_data = customdata.getCustomData(CVE_YEAR, ECOSYSTEM)
         consts.printComparison(custom_data, npmrepo_data, CVE_YEAR, ECOSYSTEM)
         print('')
-        print('CVES to manually review are as below:')
+        print('CVEs to manually review are:')
         print(utils.getDiffList(custom_data, npmrepo_data))
-    elif COMPARE_TYPE == 6:
+    elif COMPARE_TYPE == consts.ComparisonType.STACK_CVEDB_ECO.value:
         packagedata, versiondata = utils.getStackData(ECOSYSTEM, CVE_DATE)
-        if (ECOSYSTEM == 'javascript'):
+        if (ECOSYSTEM == consts.Ecosystem.JAVASCRIPT.value):
             pkgjsonfile = customdata.createpkgjsonFiles(
                 packagedata, versiondata, consts.getFolderName())
             npmcves = customdata.runnpmaudit(pkgjsonfile)
+            print('CVEs that are shown in npm audit are:')
+            print(npmcves)
             dacves = customdata.runDA(packagedata, versiondata)
 
 

@@ -12,10 +12,10 @@ class ComparisonType(Enum):
 
 
 class Ecosystem(Enum):
-    JAVA = 1
-    JAVASCRIPT = 2
-    PYTHON = 3
-    GOLANG = 4
+    JAVA = 'java'
+    JAVASCRIPT = 'javascript'
+    PYTHON = 'python'
+    GOLANG = 'go'
 
 
 def getRepoName():
