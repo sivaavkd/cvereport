@@ -6,19 +6,6 @@ import os
 import ghtoken
 
 
-def getGHRepo():
-    try:
-        ACCESS_TOKEN = ghtoken.getAccessToken()
-        REPO_NAME = consts.getRepoName()
-        myGitHub = github.Github(ACCESS_TOKEN)
-        cveDbRepo = myGitHub.get_repo(REPO_NAME)
-        print("Reading CVE information of", cveDbRepo.full_name, "from Github")
-        return cveDbRepo
-    except:
-        print("Error while reading Github data.  Please make sure you have a working access token in getAccessToken() of consts.py")
-        sys.exit(1)
-
-
 def getNVDfileName(fileyear):
     return consts.getFolderName() + '/nvdcve-1.0-' + str(fileyear) + '.json'
 
@@ -91,9 +78,13 @@ def getStackData(ecosystem, cvedate):
 
 def changeDirectory(dirName):
     currDir = os.getcwd()
-    print(currDir)
     if not currDir.endswith('/' + dirName) and dirName != '':
         if currDir.find('pkgfolder') >= 0:
             os.chdir('..')
-        print(os.getcwd())
         os.chdir(dirName)
+        return True
+    return False
+
+
+def MoveUpDir():
+    os.chdir('..')

@@ -3,6 +3,7 @@ import consts
 import sys
 from dateutil import parser
 import utils
+import ghutils
 
 CVE_DATE = consts.getToday()
 CVE_TO_DATE = consts.getNextday(CVE_DATE)
@@ -28,7 +29,7 @@ def getArgs():
 
 
 def getData():
-    cveDbRepo = utils.getGHRepo()
+    cveDbRepo = ghutils.getGHRepo()
     print("Reading CVE information of", cveDbRepo.full_name, "from Github")
     cveData = cveDbRepo.get_issues(
         "none", "all", "none", github.GithubObject.NotSet, "", "", "", CVE_DATE)

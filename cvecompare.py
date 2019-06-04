@@ -2,6 +2,7 @@ import github
 import consts
 import sys
 import utils
+import ghutils
 from dateutil import parser
 import customdata
 
@@ -46,7 +47,7 @@ def getNVDData():
 
 def getRepoData(ecosystem='all'):
     try:
-        cveDbRepo = utils.getGHRepo()
+        cveDbRepo = ghutils.getGHRepo()
         return utils.getCVEdataRepo(cveDbRepo, CVE_YEAR, ecosystem)
     except:
         print("Error while reading data from repo.")
@@ -68,17 +69,10 @@ def printComparisonReport():
     elif COMPARE_TYPE == consts.ComparisonType.STACK_CVEDB_ECO.value:
         packagedata, versiondata = utils.getStackData(ECOSYSTEM, CVE_DATE)
         if (ECOSYSTEM == consts.Ecosystem.JAVASCRIPT.value):
-            pkgjsonfile = customdata.createpkgjsonFile(
-                packagedata, versiondata, consts.getFolderName())
-            pkgjsonFileList = customdata.createMultiplePkgFiles(
-                packagedata, versiondata, consts.getFolderName())
-            # npmcves = customdata.runnpmaudit(pkgjsonfile)
-            # npmcves = customdata.runAllnpmaudits(pkgjsonFileList)
-            # print('CVEs that are shown in npm audit are:')
-            # print(npmcves)
-            dacves = customdata.runDA(ECOSYSTEM, packagedata, versiondata)
-            print('CVEs that are shown in Stack Report are:')
-            # print(dacves)
+            customdata.npm_stack_cvedb_compare(
+                packagedata, versiondata, CVE_DATE)
+        print('CVEs that are shown in Stack Report are:')
+        dacves = customdata.runDA(ECOSYSTEM, packagedata, versiondata)
 
 
 getArgs()

@@ -18,8 +18,15 @@ class Ecosystem(Enum):
     GOLANG = 'go'
 
 
-def getRepoName():
-    return "fabric8-analytics/cvedb"
+def getRepoName(isCompareRepo=False):
+    if isCompareRepo:
+        return 'cve-compare'
+    else:
+        return 'fabric8-analytics/cvedb'
+
+
+def getRemoteRepoName():
+    return 'origin'
 
 
 def getPkgFileName():
@@ -109,3 +116,7 @@ def getNPMpkgcheckCmd():
 
 def getnpmauditCmd():
     return 'npm i --package-lock-only', 'npm audit --json'
+
+
+def getCommitMsg():
+    return 'initial commit'
