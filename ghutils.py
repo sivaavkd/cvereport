@@ -18,6 +18,17 @@ def getGHRepo():
         sys.exit(1)
 
 
+def getFilesList(pkgFileName):
+    fileList = []
+    pkglockFileName = pkgFileName.split('.json')[0] + '-lock' + '.json'
+    npmauditFileName = pkgFileName.split(consts.getPkgFileName())[
+        0] + 'npmaudit.json'
+    fileList.append(pkgFileName)
+    fileList.append(pkglockFileName)
+    fileList.append(npmauditFileName)
+    return fileList
+
+
 def createGHFiles(ghorg, reponame, fileNames):
     ghrepo = ghorg.create_repo(reponame)
     print('repo ', reponame, ' created')
@@ -41,11 +52,4 @@ def npm_createGHRepos(repos, files):
     ghorg = myGitHub.get_organization(consts.getRepoName(True))
     deleteAllRepos(ghorg)
     for i in range(len(repos)):
-        fileList = []
-        pkgFileName = files[i]
-        pkglockFileName = pkgFileName.split('.json')[0] + '-lock' + '.json'
-        npmauditFileName = pkgFileName.split('/')[0] + '/npmaudit.json'
-        fileList.append(files[i])
-        fileList.append(pkglockFileName)
-        fileList.append(npmauditFileName)
-        createGHFiles(ghorg, repos[i], fileList)
+        createGHFiles(ghorg, repos[i], getFilesList(files[i]))

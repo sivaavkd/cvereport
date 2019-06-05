@@ -28,10 +28,12 @@ def getCustomData(datayear, ecosystem, alldata=False):
     return data
 
 
-def createpkgjsonFile(packagesList, versionsList, pkgfolder):
-    pkgFileName = consts.getPkgFileName()
+def createpkgjsonFile(packagesList, versionsList, pkgfolder, cvedate):
     pkgsToRemove = []
-    utils.changeDirectory(pkgfolder)
+    pkgfolder = pkgfolder + '/pkgfolder_' + str(cvedate)
+    if not os.path.exists(pkgfolder):
+        os.mkdir(pkgfolder)
+    pkgFileName = pkgfolder + '/' + consts.getPkgFileName()
     if os.path.isfile(pkgFileName):
         print(
             'Package.json already exists, Reading it...')
@@ -69,13 +71,17 @@ def createpkgjsonFile(packagesList, versionsList, pkgfolder):
 def createMultiplePkgFiles(packages, versions, pkgfolder, cvedate):
     pkgjsonFiles = []
     pkgjsonFolders = []
-    utils.changeDirectory(pkgfolder)
+    # bChangedDir = utils.changeDirectory(pkgfolder)
     timeStart = consts.getDate(True)
+    dirName = consts.getFolderName() + '/pkgfolder_' + str(cvedate)
+    pkgjsonName = dirName + '/' + consts.getPkgFileName()
+    pkgjsonFiles.append(pkgjsonName)
+    pkgjsonFolders.append(dirName)
     for i in range(len(packages)):
-        dirName = 'pkgfolder_' + str(i) + '_' + str(cvedate)
+        dirName = consts.getFolderName() + '/pkgfolder_' + str(i) + '_' + str(cvedate)
         if not os.path.exists(dirName):
             os.mkdir(dirName)
-        pkgjson = open(dirName + '/package.json', "w+")
+        pkgjson = open(dirName + '/' + consts.getPkgFileName(), "w+")
         pkgcmdPrefix, pkgcmdSuffix, pkgFindPrefix, pkgFindSuffix = consts.getNPMpkgcheckCmd()
         pkgjson.write('{\n\t"dependencies": {\n')
         pkgjson.write('\t\t"' + packages[i] + '": "' + versions[i] + '"')
@@ -90,7 +96,7 @@ def packageLockExits():
     return False
 
 
-def runnpmaudit(pkgjsonfolder, createAuditReport=True):
+def runnpmaudit(pkgjsonfolder, cvedate, createAuditReport=True):
     bChangedDir = utils.changeDirectory(pkgjsonfolder)
     cvesfound = []
     pkglockcmd, auditcmd = consts.getnpmauditCmd()
@@ -107,12 +113,14 @@ def runnpmaudit(pkgjsonfolder, createAuditReport=True):
             json.dump(auditresult, outfile, indent=4)
     if bChangedDir:
         utils.MoveUpDir()
+        utils.MoveUpDir()
     return cvesfound
 
 
-def runAllnpmaudits(pkgjsonFileList):
+def runAllnpmaudits(pkgjsonFileList, cvedate):
     for i in range(len(pkgjsonFileList)):
-        cvesfound = runnpmaudit(pkgjsonFileList[i].split('/')[0])
+        cvesfound = runnpmaudit(pkgjsonFileList[i].split(
+            '/' + consts.getPkgFileName())[0], cvedate)
     return cvesfound
 
 
@@ -125,11 +133,12 @@ def runDA(ecosys, packages, versions):
 def npm_stack_cvedb_compare(packagedata, versiondata, cvedate):
     ecosystem = consts.Ecosystem.JAVASCRIPT.value
     packages, versions = createpkgjsonFile(
-        packagedata, versiondata, consts.getFolderName())
+        packagedata, versiondata, consts.getFolderName(), cvedate)
     pkgjsonFolderList, pkgjsonFileList = createMultiplePkgFiles(
         packages, versions, consts.getFolderName(), cvedate)
-    npmcves = runnpmaudit(consts.getFolderName())
-    npmcves = runAllnpmaudits(pkgjsonFileList)
+    npmcves = runnpmaudit(consts.getFolderName() +
+                          '/pkgfolder_' + str(cvedate), cvedate)
+    npmcves = runAllnpmaudits(pkgjsonFileList, cvedate)
     ghutils.npm_createGHRepos(pkgjsonFolderList, pkgjsonFileList)
     print('CVEs that are shown in npm audit are:')
     print(npmcves)

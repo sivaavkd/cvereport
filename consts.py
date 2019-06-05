@@ -37,8 +37,15 @@ def getNPMAuditReportName():
     return 'npmaudit.json'
 
 
-def getFolderName():
-    return 'feeds'
+def getFolderName(ecosystem=''):
+    if ecosystem == '':
+        return 'feeds'
+    elif ecosystem == Ecosystem.JAVA:
+        return 'maven_feeds'
+    elif ecosystem == Ecosystem.JAVASCRIPT:
+        return 'npm_feeds'
+    elif ecosystem == Ecosystem.PYTHON:
+        return 'pypi_feeds'
 
 
 def getDate(includetime=False, thisyear=0, thismonth=0, thisday=0):
