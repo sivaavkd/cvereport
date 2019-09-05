@@ -38,7 +38,7 @@ def getCVEdataRepo(repo, year, ecosystem='all'):
         'database/python/' + str(year))
     if ecosystem == 'all' or ecosystem == 'java':
         cveFiles.extend(getCVElist(cveContentJava, year))
-    if ecosystem == 'all' or ecosystem == 'javascript':
+    if ecosystem == 'all' or ecosystem == 'javascript' or ecosystem == 'npm':
         cveFiles.extend(getCVElist(cveContentJS, year))
     if ecosystem == 'all' or ecosystem == 'python':
         cveFiles.extend(getCVElist(cveContentPython, year))

@@ -1,5 +1,6 @@
-from feeds.data_2019 import setData2019_js
-from feeds.data_2018 import setData2018_js
+from feeds.data_2019 import setData2019_js, setData2019_py
+from feeds.data_2018 import setData2018_js, setData2018_py
+from feeds.data_2017 import setData2017_js, setData2017_py
 import os
 import consts
 import utils
@@ -17,14 +18,21 @@ def getCustomData(datayear, ecosystem, alldata=False):
         elif ecosystem == 'java':
             data = setData2019_js(alldata)
         elif ecosystem == 'python':
-            data = setData2019_js(alldata)
+            data = setData2019_py(alldata)
     elif datayear == 2018:
         if ecosystem == 'javascript':
             data = setData2018_js(alldata)
         elif ecosystem == 'java':
             data = setData2018_js(alldata)
         elif ecosystem == 'python':
-            data = setData2018_js(alldata)
+            data = setData2018_py(alldata)
+    elif datayear == 2017:
+        if ecosystem == 'javascript':
+            data = setData2017_js(alldata)
+        elif ecosystem == 'java':
+            data = setData2017_js(alldata)
+        elif ecosystem == 'python':
+            data = setData2017_py(alldata)
     return data
 
 
@@ -134,11 +142,11 @@ def npm_stack_cvedb_compare(packagedata, versiondata, cvedate):
     ecosystem = consts.Ecosystem.JAVASCRIPT.value
     packages, versions = createpkgjsonFile(
         packagedata, versiondata, consts.getFolderName(), cvedate)
-    pkgjsonFolderList, pkgjsonFileList = createMultiplePkgFiles(
-        packages, versions, consts.getFolderName(), cvedate)
+    # pkgjsonFolderList, pkgjsonFileList = createMultiplePkgFiles(
+    #     packages, versions, consts.getFolderName(), cvedate)
     npmcves = runnpmaudit(consts.getFolderName() +
                           '/pkgfolder_' + str(cvedate), cvedate)
-    npmcves = runAllnpmaudits(pkgjsonFileList, cvedate)
-    ghutils.npm_createGHRepos(pkgjsonFolderList, pkgjsonFileList)
+    # npmcves = runAllnpmaudits(pkgjsonFileList, cvedate)
+    # ghutils.npm_createGHRepos(pkgjsonFolderList, pkgjsonFileList)
     print('CVEs that are shown in npm audit are:')
     print(npmcves)

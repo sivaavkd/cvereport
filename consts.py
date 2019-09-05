@@ -3,19 +3,19 @@ from enum import Enum
 
 
 class ComparisonType(Enum):
-    NVD_CVEDB_ALL = 1
-    NVD_CVEDB_ECO = 2
-    CUSTOM_CVEDB_ALL = 3
-    CUSTOM_CVEDB_ECO = 4
-    STACK_CVEDB_ALL = 5
-    STACK_CVEDB_ECO = 6
+    NVD_CVEDB_ALL = 1  # compare cvedb data with NVD data for all ecosystems
+    NVD_CVEDB_ECO = 2  # compare cvedb data with NVD data for a particular ecosystem
+    CUSTOM_CVEDB_ALL = 3  # compare cvedb data with custom files for all ecosystems
+    CUSTOM_CVEDB_ECO = 4  # compare cvedb data with custom files for a particular ecosystem
+    STACK_CVEDB_ALL = 5  # compare cvedb data with user stacks for all ecosystems
+    STACK_CVEDB_ECO = 6  # compare cvedb data with user stacks for a particular ecosystem
 
 
 class Ecosystem(Enum):
-    JAVA = 'maven'
-    JAVASCRIPT = 'npm'
-    PYTHON = 'pypi'
-    GOLANG = 'go'
+    JAVA = 'all', 'maven', 'java'
+    JAVASCRIPT = 'all', 'npm', 'node', 'js', 'javascript'
+    PYTHON = 'all', 'pypi', 'python'
+    GOLANG = 'all', 'go', 'golang'
 
 
 def getRepoName(isCompareRepo=False):
@@ -127,3 +127,21 @@ def getnpmauditCmd():
 
 def getCommitMsg():
     return 'initial commit'
+
+
+def getVendorFileNames(vendorid):
+    if vendorid == 1:  # Snyk
+        return ['vendorfiles/snyk-premium-feed.json', 'vendorfiles/snyk-essentials-feed.json']
+    return []
+
+
+def getVendorEcosystems(vendorid):
+    if vendorid == 1:  # Snyk
+        return ['java', 'js', 'python']
+    return []
+
+
+def getPremiumCVEText(vendorid):
+    if vendorid == 1:
+        return 'Snyk Premium'
+    return ''

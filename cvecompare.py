@@ -55,24 +55,24 @@ def getRepoData(ecosystem='all'):
 
 
 def printComparisonReport():
-    if COMPARE_TYPE == 1:
+    if COMPARE_TYPE == consts.ComparisonType.NVD_CVEDB_ALL.value:
         repodata = getRepoData()
         nvddata = getNVDData()
         consts.printNVDrepo(nvddata, repodata, CVE_YEAR)
-    elif COMPARE_TYPE == 4:
-        npmrepo_data = getRepoData(ECOSYSTEM)
+    elif COMPARE_TYPE == consts.ComparisonType.CUSTOM_CVEDB_ECO.value:
+        repo_data = getRepoData(ECOSYSTEM)
         custom_data = customdata.getCustomData(CVE_YEAR, ECOSYSTEM)
-        consts.printComparison(custom_data, npmrepo_data, CVE_YEAR, ECOSYSTEM)
+        consts.printComparison(custom_data, repo_data, CVE_YEAR, ECOSYSTEM)
         print('')
         print('CVEs to manually review are:')
-        print(utils.getDiffList(custom_data, npmrepo_data))
+        print(utils.getDiffList(custom_data, repo_data))
     elif COMPARE_TYPE == consts.ComparisonType.STACK_CVEDB_ECO.value:
         packagedata, versiondata = utils.getStackData(ECOSYSTEM, CVE_DATE)
-        if (ECOSYSTEM == consts.Ecosystem.JAVASCRIPT.value):
+        if ECOSYSTEM in consts.Ecosystem.JAVASCRIPT.value:
             customdata.npm_stack_cvedb_compare(
                 packagedata, versiondata, CVE_DATE)
-        print('CVEs that are shown in Stack Report are:')
-        dacves = customdata.runDA(ECOSYSTEM, packagedata, versiondata)
+        #print('CVEs that are shown in Stack Report are:')
+        # dacves = customdata.runDA(ECOSYSTEM, packagedata, versiondata)
 
 
 getArgs()
